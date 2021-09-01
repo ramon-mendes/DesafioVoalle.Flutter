@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:reivindique_new/services/api.dart';
+import 'package:desafio_voalle/services/api.dart';
 
 enum ESignStatus { LOADING, SIGNED, NOT_SIGNED }
 

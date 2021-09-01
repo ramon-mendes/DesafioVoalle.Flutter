@@ -126,11 +126,11 @@ class _PageLoginRegisterState extends State<PageLoginRegister> {
   }
 
   _onRegisterPress() async {
-    setState(() {
-      _saving = true;
-    });
-
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _saving = true;
+      });
+
       API.of(context).userRegister(_txtName.text, _txtEmail.text, _txtPwd.text).then((value) async {
         if (value == ERegisterResult.ERROR) {
           final snackBar = SnackBar(content: Text('Erro ao criar seu usuário.'));

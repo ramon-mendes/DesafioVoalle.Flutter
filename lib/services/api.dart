@@ -1,18 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:desafio_voalle/apimodels/product.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:reivindique_new/apimodels/review.dart';
-import 'package:reivindique_new/apimodels/user.dart';
-import 'package:reivindique_new/services/login_notifier.dart';
+import 'package:desafio_voalle/apimodels/user.dart';
+import 'package:desafio_voalle/services/login_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const API_URL = 'reinvindiquebackend.azurewebsites.net';
-//const API_URL = 'reinvindiquemvc.azurewebsites.net';
-//const API_URL = 'localhost:44349';
+const API_URL = 'desafiovoallebackend.azurewebsites.net';
 const PREFERENCES_KEY = 'logged_user';
 
 enum ELoginResult {
@@ -160,16 +158,16 @@ class API {
     return ERegisterResult.ERROR;
   }
 
-  Future<List<Review>?> reviewList() async {
+  Future<List<Product>?> productList() async {
     if (!await _checkInternet()) throw Exception();
 
     try {
-      final response = await http.get(Uri.https(API_URL, "api/review/list"), headers: _headers);
+      final response = await http.get(Uri.https(API_URL, "api/product/list"), headers: _headers);
       if (response.statusCode == 200) {
         var all = jsonDecode(response.body);
-        var list = <Review>[];
+        var list = <Product>[];
         for (var item in all) {
-          list.add(Review.fromJson(item));
+          list.add(Product.fromJson(item));
         }
         return list;
       } else {
@@ -181,18 +179,19 @@ class API {
     return null;
   }
 
-  Future<void> reviewCreate(Review model) async {
+  Future<void> productCreate(Product product) async {
     if (!await _checkInternet()) throw Exception();
 
     try {
-      final body = model.toJson();
+      final body = product.toJson();
       body.remove('id'); // fuck
 
       final response = await http.post(
-        Uri.https(API_URL, "api/review/create"),
+        Uri.https(API_URL, "api/product/create"),
         headers: _jsonHeader(),
         body: jsonEncode(body),
       );
+
       if (response.statusCode == 200) {
         return;
       } else {
@@ -201,7 +200,40 @@ class API {
     } catch (e) {
       _catchException();
     }
+  }
 
-    return null;
+  Future<void> productEdit(Product product) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.post(
+        Uri.https(API_URL, "api/product/edit"),
+        headers: _jsonHeader(),
+        body: jsonEncode(product.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
+  }
+
+  Future<void> productRemove(String id) async {
+    if (!await _checkInternet()) throw Exception();
+
+    try {
+      final response = await http.get(Uri.https(API_URL, "api/product/remove", {'id': id}), headers: _headers);
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } catch (e) {
+      _catchException();
+    }
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:reivindique_new/page_home.dart';
-import 'package:reivindique_new/page_login_register.dart';
-import 'package:reivindique_new/services/api.dart';
-import 'package:reivindique_new/services/login_notifier.dart';
+import 'package:desafio_voalle/page_home.dart';
+import 'package:desafio_voalle/page_login_register.dart';
+import 'package:desafio_voalle/services/api.dart';
+import 'package:desafio_voalle/services/login_notifier.dart';
 import 'consts.dart' as Consts;
 
 class PageLogin extends StatefulWidget {
@@ -25,13 +25,21 @@ class _PageLoginState extends State<PageLogin> {
         color: Consts.LOADING_OVERLAY_COLOR,
         progressIndicator: Consts.LOADING_INDICATOR,
         child: SingleChildScrollView(
-          child: SafeArea(
-            child: Container(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/loginbg.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Image.asset('assets/voalle.png'),
+                    SizedBox(height: 5),
                     Text('Email'),
                     SizedBox(height: 5),
                     TextFormField(
