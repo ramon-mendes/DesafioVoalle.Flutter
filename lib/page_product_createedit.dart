@@ -32,6 +32,11 @@ class _PageProductCreateEditState extends State<PageProductCreateEdit> {
     _product = ModalRoute.of(context)!.settings.arguments as Product?;
     if (_product == null) {
       _product = Product();
+    } else {
+      _isedit = true;
+      _txtName.text = _product!.name;
+      _txtCategory.text = _product!.category;
+      _txtPrice.text = _product!.price.toString();
     }
   }
 

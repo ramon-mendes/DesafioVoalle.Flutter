@@ -1,4 +1,5 @@
 import 'package:desafio_voalle/apimodels/product.dart';
+import 'package:desafio_voalle/page_product_createedit.dart';
 import 'package:desafio_voalle/services/api.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -25,8 +26,13 @@ class _PageProductViewState extends State<PageProductView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produto'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () async {
+              await Navigator.of(context).pushNamed(PageProductCreateEdit.routeName, arguments: _product);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {

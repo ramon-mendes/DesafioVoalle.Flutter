@@ -1,3 +1,4 @@
+import 'package:desafio_voalle/widgets/password_field.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,8 @@ class PageLogin extends StatefulWidget {
 
 class _PageLoginState extends State<PageLogin> {
   bool _saving = false;
-  final TextEditingController _txtEmail = TextEditingController(text: 'ramon@misoftware.com.br');
-  final TextEditingController _txtPwd = TextEditingController(text: 'SEnha123');
+  final TextEditingController _txtEmail = TextEditingController();
+  final TextEditingController _txtPwd = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,67 +25,91 @@ class _PageLoginState extends State<PageLogin> {
         isLoading: _saving,
         color: Consts.LOADING_OVERLAY_COLOR,
         progressIndicator: Consts.LOADING_INDICATOR,
-        child: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/loginbg.png'),
-                fit: BoxFit.cover,
-              ),
+        child: Container(
+          constraints: BoxConstraints.expand(),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/loginbg.png'),
+              fit: BoxFit.cover,
             ),
+          ),
+          child: SingleChildScrollView(
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/voalle.png'),
-                    SizedBox(height: 5),
-                    Text('Email'),
+                    Center(
+                      child: Image.asset(
+                        'assets/voalle.png',
+                        width: 300,
+                      ),
+                    ),
                     SizedBox(height: 5),
                     TextFormField(
                       controller: _txtEmail,
                       decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
+                        hintText: 'E-mail',
                       ),
                     ),
                     SizedBox(height: 15),
-                    Text('Senha'),
+                    PasswordField(_txtPwd),
                     SizedBox(height: 5),
-                    TextFormField(
-                      controller: _txtPwd,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: ButtonTheme(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: loginClicked,
+                            child: Text(
+                              "LOGIN",
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 5),
-                    ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: loginClicked,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: ButtonTheme(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(PageLoginRegister.routeName);
+                            },
+                            child: Text(
+                              "CADASTRE-SE",
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 5),
-                    ElevatedButton(
-                      child: const Text('Cadastre-se'),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(PageLoginRegister.routeName);
-                      },
-                    ),
-                    SizedBox(height: 5),
-                    GestureDetector(
-                      onTap: () async {
-                        var res = await Provider.of<LoginNotifier>(context, listen: false).logInByGoogle(context);
-                        if (res == ESignStatus.NOT_SIGNED) {
-                          final snackBar = SnackBar(
-                            content: Text('Não foi possível completar seu login, tente novamente.'),
-                            backgroundColor: Colors.red,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
-                      },
-                      child: Image(
-                        image: AssetImage('assets/google-signin.png'),
-                        fit: BoxFit.cover,
-                        width: 300,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: ButtonTheme(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              var res = await Provider.of<LoginNotifier>(context, listen: false).logInByGoogle(context);
+                              if (res == ESignStatus.NOT_SIGNED) {
+                                final snackBar = SnackBar(
+                                  content: Text('Não foi possível completar seu login, tente novamente.'),
+                                  backgroundColor: Colors.red,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              }
+                            },
+                            child: Text(
+                              "ENTRAR COM O GOOGLE",
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
