@@ -1,16 +1,8 @@
-# desafio_voalle
+# Desafio Voalle
 
-A new Flutter project.
+Esse repositório contém o projeto Flutter para o desafio para a oportunidade da empresa Voalle.
 
-## Getting Started
+O app foi publicado na PlayStore mas ainda está em análise. O link público é https://play.google.com/store/apps/details?id=br.com.ramonmendes.desafio_voalle22
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+O app se comunica com um backend para salvar os dados no banco.
+Esse backend, feito em C#, está disponível nesse repo: https://github.com/ramon-mendes/DesafioVoalle.Backend
