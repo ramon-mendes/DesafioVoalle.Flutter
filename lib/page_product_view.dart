@@ -71,11 +71,12 @@ class _PageProductViewState extends State<PageProductView> {
                 SizedBox(height: 20),
                 Text('Preço:'),
                 Text(
-                  _product!.price.toString(),
+                  'R\$ ' + _product!.price.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 SizedBox(height: 20),
                 Text('Imagens:'),
+                SizedBox(height: 5),
                 GridView.count(
                   primary: false, // disables GridView scrolling
                   shrinkWrap: true,

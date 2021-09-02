@@ -4,9 +4,8 @@ import 'package:desafio_voalle/page_product_view.dart';
 import 'package:desafio_voalle/services/api.dart';
 import 'package:desafio_voalle/services/login_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
-
-import 'color_loader_4.dart';
 
 class PageList extends StatefulWidget {
   @override
@@ -14,47 +13,56 @@ class PageList extends StatefulWidget {
 }
 
 class _PageListState extends State<PageList> {
+  bool _loading = false;
   static List<Product>? _cache;
 
   @override
   void initState() {
     super.initState();
+    _cache = null;
     _reloadData();
   }
 
   void _reloadData() {
+    setState(() {
+      _loading = true;
+    });
     API.of(context).productList().then((value) => this.setState(() {
           if (value != null) _cache = value;
+          _loading = false;
         }));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: _buildListView(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).pushNamed(PageProductCreateEdit.routeName);
-          _reloadData();
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Produtos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Logout',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: _onItemTapped,
+    return LoadingOverlay(
+      isLoading: _loading,
+      child: Scaffold(
+        body: SafeArea(
+          child: _buildListView(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          backgroundColor: Colors.green,
+          onPressed: () async {
+            await Navigator.of(context).pushNamed(PageProductCreateEdit.routeName);
+            _reloadData();
+          },
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Produtos',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.logout),
+              label: 'Logout',
+            ),
+          ],
+          currentIndex: 0,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -72,8 +80,15 @@ class _PageListState extends State<PageList> {
 
   Widget _buildListView() {
     if (_cache == null) {
-      return Center(
-        child: new ColorLoader4(),
+      return Container();
+    }
+
+    if (_cache!.length == 0) {
+      return Padding(
+        padding: const EdgeInsets.all(15),
+        child: Text(
+          'Nenhum item adicionado.\n\nClique no botão de + para adicionar seu primeiro produto.',
+        ),
       );
     }
 
