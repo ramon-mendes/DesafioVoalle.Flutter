@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:desafio_voalle/apimodels/product.dart';
 import 'package:desafio_voalle/page_product_createedit.dart';
 import 'package:desafio_voalle/services/api.dart';
@@ -30,7 +33,12 @@ class _PageProductViewState extends State<PageProductView> {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () async {
-              await Navigator.of(context).pushNamed(PageProductCreateEdit.routeName, arguments: _product);
+              var res = await Navigator.of(context).pushNamed(PageProductCreateEdit.routeName, arguments: _product);
+              if (res != null) {
+                setState(() {
+                  _product = res as Product;
+                });
+              }
             },
           ),
           IconButton(
@@ -44,12 +52,54 @@ class _PageProductViewState extends State<PageProductView> {
       body: LoadingOverlay(
         isLoading: _saving,
         child: Container(
-          child: Column(
-            children: [],
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Nome:'),
+                Text(
+                  _product!.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SizedBox(height: 20),
+                Text('Categoria:'),
+                Text(
+                  _product!.category,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SizedBox(height: 20),
+                Text('Preço:'),
+                Text(
+                  _product!.price.toString(),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SizedBox(height: 20),
+                Text('Imagens:'),
+                GridView.count(
+                  primary: false, // disables GridView scrolling
+                  shrinkWrap: true,
+                  crossAxisCount: 5,
+                  childAspectRatio: 1,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  children: _getGridImages(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _getGridImages() {
+    List<Widget> widgets = <Widget>[];
+
+    var imgs = this._product!.imagesURL;
+    widgets.addAll(imgs.map((url) => _GridImage(url)));
+
+    return widgets;
   }
 
   _deleteModel(BuildContext context) {
@@ -66,5 +116,38 @@ class _PageProductViewState extends State<PageProductView> {
         this._saving = false;
       });
     });
+  }
+}
+
+class _GridImage extends StatelessWidget {
+  const _GridImage(this.url);
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isbase64 = url.startsWith("data:");
+    late Uint8List bytes;
+
+    if (isbase64) {
+      var data = url.split(',')[1];
+      bytes = base64Decode(data);
+    }
+
+    final Widget image = Material(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      clipBehavior: Clip.antiAlias,
+      child: isbase64
+          ? Image.memory(
+              bytes,
+              fit: BoxFit.fitHeight,
+            )
+          : Image.network(
+              this.url,
+              fit: BoxFit.fitHeight,
+            ),
+    );
+
+    return image;
   }
 }

@@ -235,7 +235,7 @@ class _PageProductCreateEditState extends State<PageProductCreateEdit> {
       });
 
       _product!.name = _txtName.text;
-      _product!.category = _txtName.text;
+      _product!.category = _txtCategory.text;
       _product!.price = double.parse(_txtPrice.text);
       if (_isedit) {
         await API.of(context).productEdit(_product!);
@@ -243,10 +243,10 @@ class _PageProductCreateEditState extends State<PageProductCreateEdit> {
         await API.of(context).productCreate(_product!);
       }
 
-      final snackBar = SnackBar(content: Text('Produto criado com sucesso.'));
+      final snackBar = SnackBar(content: Text(_isedit ? 'Produto salvo com sucesso.' : 'Produto criado com sucesso.'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(_product);
     }
   }
 }
@@ -272,11 +272,11 @@ class _GridImage extends StatelessWidget {
       child: isbase64
           ? Image.memory(
               bytes,
-              fit: BoxFit.fill,
+              fit: BoxFit.fitHeight,
             )
           : Image.network(
               this.url,
-              fit: BoxFit.fill,
+              fit: BoxFit.fitHeight,
             ),
     );
 
